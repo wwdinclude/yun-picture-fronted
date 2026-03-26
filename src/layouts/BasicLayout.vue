@@ -4,11 +4,14 @@
       <a-layout-header class="header">
         <GlobalHandler />
       </a-layout-header>
-      <a-layout-content class="content">
-        <router-view />
-      </a-layout-content>
+      <a-layout>
+        <GlobalSider class="sider"/>
+        <a-layout-content class="content">
+          <router-view />
+        </a-layout-content>
+      </a-layout>
       <a-layout-footer class="footer">
-        <a href="https://www.codefather.cn" target="_blank">编程导航 by 程序员鱼皮</a>
+        <a href="https://www.codefather.cn" target="_blank">编程导航 by 纠病成RE</a>
       </a-layout-footer>
     </a-layout>
   </div>
@@ -16,6 +19,7 @@
 
 <script setup lang="ts">
 import GlobalHandler from '@/components/GlobalHandler.vue'
+import GlobalSider from '@/components/GlobalSider.vue'
 </script>
 
 <style scoped>
@@ -23,7 +27,19 @@ import GlobalHandler from '@/components/GlobalHandler.vue'
   padding-inline: 28px;
   background: white;
   color: unset;
-  margin-bottom: 16px;
+  margin-bottom: 1px;
+}
+
+#basicLayout .sider {
+  background: #fff;
+  padding-top: 20px;
+  border-right: 0.5px solid #eee;
+  padding-top: 20px;
+}
+
+#basicLayout :deep(.ant-menu-root) {
+  border-bottom: none !important;
+  border-inline-end: none !important;
 }
 
 #basicLayout .content {
