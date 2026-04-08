@@ -1,5 +1,6 @@
 <template>
   <div id="addPicturePage">
+    <ImageCropper imageUrl="https://avatars2.githubusercontent.com/u/15681693?s=460&v=4" />
     <h2 style="margin-bottom: 16px">
       {{ route.query?.id ? '编辑图片' : '创建图片' }}
     </h2>
@@ -19,12 +20,22 @@
       </a-tab-pane>
     </a-tabs>
     <!-- 图片编辑 -->
-    <div v-if="picture && picture.picSize >= 512 * 512 && picture.picSize <= 4096 * 4096" class="edit-bar" >
+    <div v-if="picture" class="edit-bar">
       <a-space size="middle">
-        <a-button type="primary" ghost :icon="h(FullscreenOutlined)" @click="doImagePainting">
+        <a-button :icon="h(EditOutlined)" @click="doEditPicture">编辑图片</a-button>
+        <a-button v-if="picture && picture.picSize >= 512 * 512 && picture.picSize <= 4096 * 4096"
+                  type="primary" ghost :icon="h(FullscreenOutlined)" @click="doImagePainting">
           AI 扩图
         </a-button>
       </a-space>
+      <ImageCropper
+        ref="imageCropperRef"
+        :imageUrl="picture?.url"
+        :picture="picture"
+        :spaceId="spaceId"
+        :space="space"
+        :onSuccess="onSuccess"
+      />
       <ImageOutPainting
         ref="imageOutPaintingRef"
         :picture="picture"
@@ -77,7 +88,7 @@
 
 <script setup lang="ts">
 import PictureUpload from '@/components/PictureUpload.vue'
-import { computed, h, onMounted, reactive, ref } from 'vue'
+import { computed, h, onMounted, reactive, ref, watchEffect } from 'vue'
 import {
   editPictureUsingPost,
   getPictureVoByIdUsingGet,
@@ -87,7 +98,9 @@ import { message } from 'ant-design-vue'
 import { useRoute, useRouter } from 'vue-router'
 import UrlPictureUpload from '@/components/UrlPictureUpload.vue'
 import ImageOutPainting from '@/components/ImageOutPainting.vue'
-import { FullscreenOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
+import ImageCropper from '@/components/ImageCropper.vue'
+import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 
 const picture = ref<API.PictureVO>()
 const pictureForm = reactive<API.PictureEditRequest>({})
@@ -166,7 +179,6 @@ const getTagCategoryOptions = async () => {
 const getOldPicture = async () => {
   // 获取老id
   const id = route.query?.id
-  console.log(id)
   if (id) {
     const res = await getPictureVoByIdUsingGet({
       id: id,
@@ -187,6 +199,21 @@ onMounted(() => {
   getOldPicture()
 })
 
+// 图片编辑弹窗引用
+const imageCropperRef = ref()
+
+// 编辑图片
+const doEditPicture = () => {
+  if (imageCropperRef.value) {
+    imageCropperRef.value.openModal()
+  }
+}
+
+// 编辑成功事件
+const onCropSuccess = (newPicture: API.PictureVO) => {
+  picture.value = newPicture
+}
+
 const imageOutPaintingRef = ref()
 
 
@@ -201,6 +228,24 @@ const onImageOutPaintingSuccess = (newPicture: API.PictureVO) => {
   picture.value = newPicture
 }
 
+const space = ref<API.SpaceVO>()
+
+// 获取空间信息
+const fetchSpace = async () => {
+  // 获取数据
+  if (spaceId.value) {
+    const res = await getSpaceVoByIdUsingGet({
+      id: spaceId.value,
+    })
+    if (res.data.code === 0 && res.data.data) {
+      space.value = res.data.data
+    }
+  }
+}
+
+watchEffect(() => {
+  fetchSpace()
+})
 </script>
 
 <style scoped>
