@@ -11,7 +11,7 @@
         </a-layout-content>
       </a-layout>
       <a-layout-footer class="footer">
-        <a href="https://www.codefather.cn" target="_blank">编程导航 by 纠病成RE</a>
+        <a href="http://yun-picture.jiubingchengre.top" target="_blank"> by 纠病成RE</a>
       </a-layout-footer>
     </a-layout>
   </div>
