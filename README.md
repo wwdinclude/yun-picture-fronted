@@ -4,4 +4,4 @@
 
 ## 注意事项
 如果想现在本地跑一下，请将 pictureEditWebSocket.ts 和 request.ts 中先将 PROD_BASE_URL 改为使用 DEV_BASE_URL  
-注意，如果要将项目部署到服务器上，请将 pictureEditWebSocket.ts 的 PROD_BASE_URL 修改为ws://{域名或者服务器IP}
+如果要将项目部署到服务器上，请将 pictureEditWebSocket.ts 的 PROD_BASE_URL 修改为ws://{域名或者服务器IP}
